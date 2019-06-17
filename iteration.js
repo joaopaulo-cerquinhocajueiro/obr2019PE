@@ -100,7 +100,7 @@ a.addEventListener("load",function(){
         point.y = evt.clientY;
         var xy = point.matrixTransform(svgDoc.firstElementChild.getScreenCTM().inverse())
         if(xy.x>800.0){
-            tooltip.firstChild.setAttribute("x", xy.x-150);
+            tooltip.firstChild.setAttribute("x", xy.x-180);
         } else {
             tooltip.firstChild.setAttribute("x", xy.x+5);
         }
