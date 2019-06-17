@@ -73,45 +73,40 @@ var a = document.getElementById("alphasvg");
 a.addEventListener("load",function(){
 
     // get the inner DOM of alpha.svg
-    var svgDoc = a.contentDocument;
+    var svgDoc = a.getSVGDocument();
     // get the inner element by id
     // var cidade;
     var legenda = svgDoc.getElementById("tooltip");
     legenda.setAttribute("visibility", "hidden");
     for(var cidade in tamanhos){
         var cidadeElement = svgDoc.getElementById(cidade);
-        // var title = svgDoc.createElementNS("http://www.w3.org/2000/svg","title")
-        // title.textContent = cidade +': ' + tamanhos[cidade] + ' participantes.';
-        // cidadeElement.appendChild(title);
         cidadeElement.addEventListener("mousemove",function(event){
-            // console.log(atual);
             var atual = event.srcElement.id;
             ShowTooltip(event, nomes[atual] +': ' + tamanhos[atual] + ' participantes.');
         }, false);
-        cidadeElement.addEventListener("mouseout",function(event){
+        cidadeElement.addEventListener("mouseout",function(evt){
             var tooltip = svgDoc.getElementById('tooltip');
             // console.log(tooltip)
             tooltip.setAttribute("visibility", "hidden");    
+            evt.target.style.fill = '#FFFF00';
         },false);
     }
 
     function ShowTooltip(evt, mouseovertext) {
         var tooltip = svgDoc.getElementById('tooltip');
-        var xy = evt.target.getAttribute('d').split(' ')[1].split(',')
-        var x = parseFloat(xy[0]);
-        var y = parseFloat(xy[1]);
-        console.log(x,y);
-        tooltip.firstChild.setAttribute("x", x-70);
-        tooltip.firstChild.setAttribute("y", y + 20);
-        // console.log(tooltip.x,tooltip.y);
-        // console.log(tooltip.firstChild)
+        evt.target.style.fill = '#0080A0';
+        var point = svgDoc.firstChild.createSVGPoint();
+        point.x = evt.clientX;
+        point.y = evt.clientY;
+        var xy = point.matrixTransform(svgDoc.firstElementChild.getScreenCTM().inverse())
+        if(xy.x>800.0){
+            tooltip.firstChild.setAttribute("x", xy.x-150);
+        } else {
+            tooltip.firstChild.setAttribute("x", xy.x+5);
+        }
+        tooltip.firstChild.setAttribute("y", xy.y-10);
         tooltip.firstChild.innerHTML = mouseovertext;
         tooltip.setAttribute("visibility", "visible");
-    }
-    
-    function HideTooltip(evt) {
-        var tooltip = svgDoc.getElementById('tooltip');
-        tooltip.setAttribute("visibility", "hidden");
     }
 }, false);
 
